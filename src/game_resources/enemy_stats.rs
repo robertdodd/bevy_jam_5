@@ -25,8 +25,8 @@ impl EnemyStats {
         self.damage *= 1.1;
         self.health *= 1.1;
         self.mob_size *= 1.1;
-        self.mob_count *= 1.1;
-        self.spawn_speed *= 0.8;
+        self.mob_count *= 1.25;
+        // self.spawn_speed *= 0.8;
     }
 }
 

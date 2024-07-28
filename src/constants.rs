@@ -9,7 +9,7 @@ pub const ENEMY_MOVEMENT_SPEED: f32 = 5.;
 pub const ENEMY_BASE_DAMAGE: f32 = 10.;
 pub const ENEMY_DEFAULT_MOB_SIZE: u32 = 2;
 pub const ENEMY_DEFAULT_MOB_COUNT: u32 = 3;
-pub const ENEMY_DEFAULT_SPAWN_SPEED: f32 = 10.;
+pub const ENEMY_DEFAULT_SPAWN_SPEED: f32 = 3.;
 pub const ENEMY_DEFAULT_HEALTH: f32 = 10.;
 
 pub const PLAYER_SIZE: f32 = 1.;
