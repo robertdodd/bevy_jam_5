@@ -255,6 +255,12 @@ pub fn c_padding_top(size: f32) -> impl Fn(&mut NodeBundle) {
     }
 }
 
+pub fn c_padding_right(size: f32) -> impl Fn(&mut NodeBundle) {
+    move |b: &mut NodeBundle| {
+        b.style.padding.right = Val::Px(size);
+    }
+}
+
 pub fn c_padding_vertical(size: f32) -> impl Fn(&mut NodeBundle) {
     move |b: &mut NodeBundle| {
         b.style.padding.top = Val::Px(size);
