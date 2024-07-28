@@ -136,8 +136,8 @@ fn hud_label_value_column(
     label_color: impl Into<Color>,
     value_extras: impl Bundle,
 ) {
-    node(parent, (), (c_row, c_justify_end)).with_children(|p| {
-        node(p, (), (c_col, c_margin_right(10.))).with_children(|p| {
+    node(parent, (), (c_row, c_justify_end, c_padding_horizontal(5.))).with_children(|p| {
+        node(p, (), (c_col, c_padding_horizontal(5.))).with_children(|p| {
             hud_label_value_text(p, value, css::WHITE, value_extras);
         });
         hud_label_value_text(p, label, label_color, ());
@@ -194,7 +194,7 @@ fn hud_level_progress(parent: &mut ChildBuilder, score: &PlayerScore) {
             (
                 c_position_absolute,
                 c_top(0.),
-                c_right(0.),
+                c_right(10.),
                 c_bottom(0.),
                 c_center,
             ),
