@@ -51,8 +51,9 @@ use collision::*;
 mod lifetime;
 use lifetime::*;
 
-mod debug;
-use debug::*;
+// Un-comment to enable debug rendering and key presses, and add `DebugPlugin` to app.
+// mod debug;
+// use debug::*;
 
 mod hud_ui;
 use hud_ui::*;
@@ -99,7 +100,7 @@ fn main() {
             GameResourcesPlugin,
         ))
         .add_plugins(LevelUpPlugin)
-        .add_plugins((MenuPlugin, DebugPlugin, UiWidgetsPlugin, HudUIPlugin))
+        .add_plugins((MenuPlugin, UiWidgetsPlugin, HudUIPlugin))
         .init_state::<AppState>()
         .init_state::<GameState>()
         .enable_state_scoped_entities::<AppState>()
