@@ -26,7 +26,7 @@ impl Default for PlayerStats {
     fn default() -> Self {
         Self {
             max_health: 100.,
-            recovery: 10.,
+            recovery: constants::PLAYER_DEFAULT_RECOVERY,
             armor: 10.,
             move_speed: constants::PLAYER_DEFAULT_SPEED,
             attack_damage: constants::PLAYER_DEFAULT_DAMAGE,

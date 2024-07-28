@@ -11,7 +11,7 @@ impl Plugin for PlayerPlugin {
             .add_systems(
                 Update,
                 (
-                    handle_input.run_if(not_paused),
+                    (handle_input, recover_health).run_if(not_paused),
                     setup_new_players,
                     handle_death,
                     (update_attractor_radius, update_max_health)
@@ -196,5 +196,18 @@ fn update_attractor_radius(
 fn update_max_health(stats: Res<PlayerStats>, mut query: Query<&mut Health, With<Player>>) {
     for mut health in query.iter_mut() {
         health.max_health = stats.max_health;
+    }
+}
+
+fn recover_health(
+    time: Res<Time>,
+    stats: Res<PlayerStats>,
+    mut query: Query<&mut Health, With<Player>>,
+) {
+    for mut health in query.iter_mut() {
+        if health.current <= stats.max_health {
+            health.current =
+                (health.current + stats.recovery * time.delta_seconds()).min(health.max_health);
+        }
     }
 }
