@@ -16,5 +16,4 @@ If it freezes in Firefox after clicking "Play", you may need to use a Chromium b
 ## TODO
 
 - Show current cycle on screen
-- Spawn enemies in mobs in a circumference pattern
 - Special items
