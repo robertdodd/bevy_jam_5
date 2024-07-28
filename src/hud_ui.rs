@@ -256,6 +256,6 @@ fn update_total_score_label(
 
 fn update_timer_label(timer: Res<GameTimer>, mut label_query: Query<&mut Text, With<TimerLabel>>) {
     for mut text in label_query.iter_mut() {
-        text.sections[0].value = timer.to_string();
+        text.sections[0].value = timer.to_time_string();
     }
 }

@@ -5,7 +5,7 @@ use bevy::{prelude::*, time::Stopwatch};
 pub struct GameTimer(pub Stopwatch);
 
 impl GameTimer {
-    pub fn to_string(&self) -> String {
+    pub fn to_time_string(&self) -> String {
         let elapsed_secs = self.0.elapsed().as_secs();
         let seconds = elapsed_secs % 60;
         let minutes = (elapsed_secs / 60) % 60;
