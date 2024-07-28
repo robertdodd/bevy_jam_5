@@ -65,7 +65,7 @@ pub struct EnemyBundle {
 }
 
 impl EnemyBundle {
-    pub fn new(pos: Vec3, movement_speed: f32, damage: f32) -> Self {
+    pub fn new(pos: Vec3, health: f32, movement_speed: f32, damage: f32) -> Self {
         Self {
             name: Name::new("Enemy"),
             enemy: Enemy {
@@ -75,7 +75,7 @@ impl EnemyBundle {
             },
             state_scoped: StateScoped(AppState::Game),
             spatial_bundle: SpatialBundle::from_transform(Transform::from_translation(pos)),
-            health: Health::default(),
+            health: Health::new(health),
             collider: Collider::Cuboid(Vec3::splat(constants::ENEMY_SIZE)),
             collision_group: CollisionGroups::new(GROUP_ENEMY, GROUP_PLAYER | GROUP_PROJECTILE),
         }
@@ -156,6 +156,7 @@ fn handle_spawn_events(
                 let pos = enemy_transform.translation;
                 commands.spawn(EnemyBundle::new(
                     pos,
+                    enemy_stats.health,
                     enemy_stats.movement_speed,
                     enemy_stats.damage,
                 ));

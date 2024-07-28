@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, utils::HashSet};
 
 use crate::*;
 
@@ -22,13 +22,20 @@ impl Plugin for ProjectilePlugin {
 pub struct Projectile {
     pub damage: f32,
     pub radius: f32,
+    pub passthrough_count: u32,
+    pub max_passthrough: u32,
 }
 
 impl Projectile {
-    pub fn new(damage: f32, radius: f32) -> Self {
+    pub fn new(damage: f32, radius: f32, max_passthrough: u32) -> Self {
         assert!(damage >= 0.);
         assert!(radius >= 0.);
-        Self { damage, radius }
+        Self {
+            damage,
+            radius,
+            max_passthrough,
+            passthrough_count: 0,
+        }
     }
 }
 
@@ -45,7 +52,14 @@ pub struct ProjectileBundle {
 }
 
 impl ProjectileBundle {
-    pub fn new(pos: Vec3, axis: Vec3, speed: f32, damage: f32, size_frac: f32) -> Self {
+    pub fn new(
+        pos: Vec3,
+        axis: Vec3,
+        speed: f32,
+        damage: f32,
+        size_frac: f32,
+        max_passthrough: u32,
+    ) -> Self {
         let height = constants::PLANET_RADIUS
             + constants::PROJECTILE_HEIGHT
             + constants::PROJECTILE_RADIUS * size_frac;
@@ -53,7 +67,11 @@ impl ProjectileBundle {
 
         Self {
             name: Name::new("Projectile"),
-            projectile: Projectile::new(damage, constants::PROJECTILE_RADIUS * size_frac),
+            projectile: Projectile::new(
+                damage,
+                constants::PROJECTILE_RADIUS * size_frac,
+                max_passthrough,
+            ),
             velocity: Velocity {
                 pos: height,
                 axis,
@@ -128,18 +146,33 @@ fn setup_new_projectiles(
 }
 
 fn handle_collision_events(
+    mut commands: Commands,
     mut events: EventReader<CollisionEvent>,
-    projectile_query: Query<&Projectile, With<Projectile>>,
+    mut projectile_query: Query<&mut Projectile, With<Projectile>>,
     mut health_query: Query<&mut Health>,
 ) {
+    let mut to_despawn = HashSet::<Entity>::new();
     for event in events.read() {
         let entity_pairs = [(event.e1, event.e2), (event.e2, event.e1)];
-        for (e1, e2) in entity_pairs {
-            if let (Ok(mut health), Ok(projectile)) =
-                (health_query.get_mut(e1), projectile_query.get(e2))
-            {
+        for (health_entity, projectile_entity) in entity_pairs {
+            if let (Ok(mut health), Ok(mut projectile)) = (
+                health_query.get_mut(health_entity),
+                projectile_query.get_mut(projectile_entity),
+            ) {
+                //ignore if marked to de-spawn
+                if to_despawn.contains(&projectile_entity) {
+                    continue;
+                }
                 health.current -= projectile.damage;
+                projectile.passthrough_count += 1;
+                if projectile.passthrough_count >= projectile.max_passthrough {
+                    to_despawn.insert(projectile_entity);
+                }
             }
         }
+    }
+
+    for entity in to_despawn {
+        commands.entity(entity).despawn_recursive();
     }
 }
