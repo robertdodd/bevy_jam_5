@@ -12,9 +12,7 @@ longer.
 - Mouse for cliking buttons
 - Arrow keys to move
 
-## Running
-
-**IMPORTANT: Firefox + AMD GPU Error**
+## Issues with Firefox + AMD GPU:
 
 If it freezes in Firefox after clicking "Play", you may need to use a Chromium browser, see: https://github.com/bevyengine/bevy/issues/14415
 
