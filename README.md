@@ -17,9 +17,4 @@ If it freezes in Firefox after clicking "Play", you may need to use a Chromium b
 
 - Show current cycle on screen
 - Spawn enemies in mobs in a circumference pattern
-- Weapon to respect amount, with a fire rate
-- Game over screen
-- Pick multiplier screen
-- HUD UI
-- Upgrades
 - Special items
