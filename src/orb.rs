@@ -1,3 +1,5 @@
+use std::f32::consts::TAU;
+
 use bevy::{
     prelude::*,
     utils::{HashMap, HashSet},
@@ -33,11 +35,11 @@ pub struct Orb {
 }
 
 impl Orb {
-    pub fn new(damage: f32) -> Self {
+    pub fn new(damage: f32, angle: f32) -> Self {
         assert!(damage >= 0.);
         Self {
             damage,
-            angle: 0.,
+            angle,
             hits: HashMap::<Entity, Timer>::new(),
         }
     }
@@ -54,10 +56,10 @@ pub struct OrbBundle {
 }
 
 impl OrbBundle {
-    pub fn new(transform: Transform, damage: f32) -> Self {
+    pub fn new(transform: Transform, damage: f32, angle: f32) -> Self {
         Self {
             name: Name::new("Orb"),
-            orb: Orb::new(damage),
+            orb: Orb::new(damage, angle),
             state_scoped: StateScoped(AppState::Game),
             transform,
             collider: Collider::Sphere(constants::ORB_RADIUS),
@@ -199,42 +201,48 @@ fn update_orb_transform(
 fn update_orbs_on_stats_change(
     mut commands: Commands,
     stats: Res<PlayerStats>,
-    mut orb_query: Query<(&mut Collider, &mut Transform, &mut Orb)>,
+    mut orb_query: Query<(Entity, &mut Collider, &mut Transform, &mut Orb)>,
     player_query: Query<(&Player, &GlobalTransform)>,
 ) {
-    let mut orb_count = 0;
+    let orb_count = orb_query.iter().count();
+    let expected_count = stats.get_amount(stats.extra_orbs + constants::ORB_BASE_AMOUNT);
 
-    // update existing orbs and count them
-    for (mut collider, mut transform, mut orb) in orb_query.iter_mut() {
-        orb_count += 1;
+    if (orb_count as u32) < expected_count {
+        // de-spawn existing orbs so we can spawn new ones the correct distance apart
+        for e in orb_query.iter().map(|(e, _, _, _)| e) {
+            commands.entity(e).despawn_recursive();
+        }
 
-        // update the collider size
-        *collider = Collider::Sphere(stats.get_attack_size(constants::ORB_RADIUS));
+        // spawn new orbs
+        let angle_spacer = TAU / (expected_count as f32);
+        for index in 0..expected_count {
+            // get the players position and axis so we can position the orb appropriately
+            let (player, player_transform) = player_query.single();
+            let camera_up = player.up.normalize();
 
-        // update the transform scale
-        transform.scale = Vec3::splat(stats.get_attack_size(constants::ORB_RADIUS));
-
-        // update the orb
-        orb.damage = stats.get_damage(constants::ORB_BASE_DAMAGE);
-    }
-
-    // spawn new orbs if required
-    let expected_amount = stats.get_amount(stats.extra_orbs + constants::ORB_BASE_AMOUNT);
-    if orb_count < expected_amount {
-        // get the players position and axis so we can position the orb appropriately
-        let (player, player_transform) = player_query.single();
-        let camera_up = player.up.normalize();
-
-        // spawn a new orb
-        commands.spawn(OrbBundle::new(
-            get_orb_transform(
-                player_transform.translation(),
-                camera_up,
-                0.,
-                stats.get_attack_size(constants::ORB_RADIUS),
-            ),
-            stats.get_damage(constants::ORB_BASE_DAMAGE),
-        ));
+            // spawn a new orb
+            let orb_angle = (index as f32) * angle_spacer;
+            commands.spawn(OrbBundle::new(
+                get_orb_transform(
+                    player_transform.translation(),
+                    camera_up,
+                    orb_angle,
+                    stats.get_attack_size(constants::ORB_RADIUS),
+                ),
+                stats.get_damage(constants::ORB_BASE_DAMAGE),
+                orb_angle,
+            ));
+        }
+    } else {
+        // update existing orbs and count them
+        for (_, mut collider, mut transform, mut orb) in orb_query.iter_mut() {
+            // update the collider size
+            *collider = Collider::Sphere(stats.get_attack_size(constants::ORB_RADIUS));
+            // update the transform scale
+            transform.scale = Vec3::splat(stats.get_attack_size(constants::ORB_RADIUS));
+            // update the orb
+            orb.damage = stats.get_damage(constants::ORB_BASE_DAMAGE);
+        }
     }
 }
 
@@ -245,8 +253,7 @@ fn get_orb_transform(player_pos: Vec3, camera_up: Vec3, angle: f32, radius: f32)
 
     // rotate the orb around the player's axis
     let towards_camera = player_pos.normalize();
-    let rot = Quat::from_axis_angle(towards_camera, angle);
-    new_transform.rotate_around(player_pos, rot);
+    new_transform.rotate_around(player_pos, Quat::from_axis_angle(towards_camera, angle));
 
     // normalize the position so its the correct distance from the center from the world
     new_transform.translation =
