@@ -70,6 +70,9 @@ use attractor::*;
 mod level_up;
 use level_up::*;
 
+mod orb;
+use orb::*;
+
 mod constants;
 mod math;
 
@@ -99,7 +102,7 @@ fn main() {
             AttractorPlugin,
             GameResourcesPlugin,
         ))
-        .add_plugins(LevelUpPlugin)
+        .add_plugins((LevelUpPlugin, OrbPlugin))
         .add_plugins((MenuPlugin, UiWidgetsPlugin, HudUIPlugin))
         .init_state::<AppState>()
         .init_state::<GameState>()

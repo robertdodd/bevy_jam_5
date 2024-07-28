@@ -37,6 +37,9 @@ fn handle_input(
     if keys.just_pressed(KeyCode::KeyX) {
         player_stats.attack_amount += 1;
     }
+    if keys.just_pressed(KeyCode::Space) {
+        player_stats.orb_count += 1;
+    }
 }
 
 fn debug_axes(

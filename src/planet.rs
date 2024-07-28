@@ -61,6 +61,7 @@ fn spawn_initial_planet(
     let mesh = planet_resources.get_or_create_mesh(&mut meshes);
     let material = planet_resources.get_or_create_material(&mut materials);
 
+    // spawn the planet
     commands.spawn((
         Planet,
         StateScoped(AppState::Game),

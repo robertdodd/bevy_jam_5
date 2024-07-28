@@ -69,7 +69,7 @@ pub struct PointBundle {
 
 impl PointBundle {
     pub fn new(pos: Vec3) -> Self {
-        let position = pos.normalize() * constants::PLANET_RADIUS + constants::POINT_RADIUS;
+        let position = pos.normalize() * (constants::PLANET_RADIUS + constants::POINT_RADIUS);
         Self {
             name: Name::new("Point"),
             point: Point,

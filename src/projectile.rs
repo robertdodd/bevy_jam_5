@@ -59,30 +59,23 @@ impl ProjectileBundle {
         axis: Vec3,
         speed: f32,
         damage: f32,
-        size_frac: f32,
+        radius: f32,
         max_passthrough: u32,
     ) -> Self {
-        let height = constants::PLANET_RADIUS
-            + constants::PROJECTILE_HEIGHT
-            + constants::PROJECTILE_RADIUS * size_frac;
+        let height = constants::PLANET_RADIUS + constants::PROJECTILE_HEIGHT + radius;
         let normalized_pos = pos.normalize() * height;
 
         Self {
             name: Name::new("Projectile"),
-            projectile: Projectile::new(
-                damage,
-                constants::PROJECTILE_RADIUS * size_frac,
-                max_passthrough,
-            ),
+            projectile: Projectile::new(damage, radius, max_passthrough),
             velocity: Velocity {
                 pos: height,
                 axis,
                 speed,
             },
             state_scoped: StateScoped(AppState::Game),
-            transform: Transform::from_translation(normalized_pos)
-                .with_scale(Vec3::splat(size_frac)),
-            collider: Collider::Sphere(constants::PROJECTILE_RADIUS * size_frac),
+            transform: Transform::from_translation(normalized_pos).with_scale(Vec3::splat(radius)),
+            collider: Collider::Sphere(radius),
             collision_group: CollisionGroups::new(GROUP_PROJECTILE, GROUP_ENEMY),
             lifetime: Lifetime::from_seconds(1.),
         }
@@ -117,7 +110,7 @@ impl ProjectileResources {
         if let Some(ref mesh) = self.mesh {
             mesh.clone()
         } else {
-            let mesh = meshes.add(Sphere::new(constants::PROJECTILE_RADIUS));
+            let mesh = meshes.add(Sphere::new(1.));
             self.mesh = Some(mesh.clone());
             mesh
         }
