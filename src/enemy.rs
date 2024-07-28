@@ -15,8 +15,8 @@ impl Plugin for EnemyPlugin {
             .add_systems(
                 Update,
                 (
-                    handle_spawn_events.run_if(on_event::<SpawnEnemies>()),
                     setup_new_enemies,
+                    handle_spawn_events.run_if(on_event::<SpawnEnemies>()),
                     (move_enemies, attack_players).run_if(not_paused),
                     handle_death_events.run_if(on_event::<DeathEvent>()),
                 )

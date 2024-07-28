@@ -7,6 +7,7 @@ pub const CAMERA_DISTANCE: f32 = 40.;
 pub const ENEMY_SIZE: f32 = 1.;
 pub const ENEMY_MOVEMENT_SPEED: f32 = 10.;
 pub const ENEMY_BASE_DAMAGE: f32 = 10.;
+pub const ENEMY_DEFAULT_MOB_SIZE: u32 = 2;
 
 pub const PLAYER_SIZE: f32 = 1.;
 pub const PLAYER_DEFAULT_SPEED: f32 = 5.;
