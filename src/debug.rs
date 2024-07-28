@@ -16,9 +16,6 @@ impl Plugin for DebugPlugin {
 
 fn handle_input(
     keys: Res<ButtonInput<KeyCode>>,
-    // time: Res<Time>,
-    // mut query: Query<(&mut Transform, &mut Player)>,
-    // camera_query: Query<&Transform, (With<GameCamera>, Without<Player>)>,
     mut enemy_stats: ResMut<EnemyStats>,
     mut player_stats: ResMut<PlayerStats>,
 ) {
