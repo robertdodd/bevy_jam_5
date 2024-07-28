@@ -7,6 +7,11 @@ longer.
 
 ---
 
+## Gameplay Controls
+
+- Mouse for cliking buttons
+- Arrow keys to move
+
 ## Running
 
 **IMPORTANT: Firefox + AMD GPU Error**
