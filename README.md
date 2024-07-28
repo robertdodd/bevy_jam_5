@@ -3,7 +3,7 @@
 Bullet heaven game for [Bevy Jam #5](https://itch.io/jam/bevy-jam-5).
 
 Survive through cycles of enemy attacks on cyclical planet. Upgrade your stats each time you level up to survive for
-longer.
+longer. [Play on itch.io](https://robertdodd.itch.io/bevy-jam-5-reverse-bullet-hell).
 
 ---
 
