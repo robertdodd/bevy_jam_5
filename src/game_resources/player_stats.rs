@@ -21,7 +21,7 @@ pub struct PlayerStats {
     pub projectile_passthrough: u32,
     pub projectile_speed: f32,
 
-    pub orb_count: u32,
+    pub extra_orbs: u32,
 
     pub pickup_radius: f32,
 }
@@ -39,7 +39,7 @@ impl Default for PlayerStats {
             attack_amount_extra: 0,
             pickup_radius: constants::PLAYER_DEFAULT_ATTRACTOR_RADIUS,
             projectile_passthrough: 1,
-            orb_count: 0,
+            extra_orbs: 0,
             projectile_speed: 100.,
         }
     }
@@ -79,7 +79,7 @@ impl PlayerStats {
                 self.projectile_passthrough = power_up.value.add_u32(self.projectile_passthrough);
             }
             Stat::OrbCount => {
-                self.orb_count = power_up.value.add_u32(self.orb_count);
+                self.extra_orbs = power_up.value.add_u32(self.extra_orbs);
             }
             Stat::ProjectileSpeed => {
                 self.projectile_speed = power_up.value.add_f32(self.projectile_speed);

@@ -109,7 +109,11 @@ fn stats_panel(parent: &mut ChildBuilder, stats: &PlayerStats) {
                     "Projectile Passthrough",
                     format!("{}", stats.projectile_passthrough),
                 );
-                stats_table_row(p, "Orbs", format!("{}", stats.orb_count));
+                stats_table_row(
+                    p,
+                    "Orbs",
+                    format!("{}", constants::ORB_BASE_AMOUNT + stats.extra_orbs),
+                );
                 stats_table_row(p, " ", " ");
                 // Pickup Radius
                 stats_table_row(p, "Pickup Radius", format!("{}", stats.pickup_radius));

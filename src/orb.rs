@@ -180,7 +180,7 @@ fn update_orb_transform(
     for (mut orb, mut transform) in query.iter_mut() {
         // update the angle for correct movement speed
         let move_angle =
-            get_angle_for_arc_length(speed, constants::PLANET_RADIUS) * time.delta_seconds();
+            get_angle_for_arc_length(speed, constants::ORB_ORBIT_RADIUS) * time.delta_seconds();
         orb.angle += move_angle;
 
         // get the players position and axis so we can rotate around it
@@ -219,7 +219,7 @@ fn update_orbs_on_stats_change(
     }
 
     // spawn new orbs if required
-    let expected_amount = stats.get_amount(stats.orb_count + constants::ORB_BASE_AMOUNT);
+    let expected_amount = stats.get_amount(stats.extra_orbs + constants::ORB_BASE_AMOUNT);
     if orb_count < expected_amount {
         // get the players position and axis so we can position the orb appropriately
         let (player, player_transform) = player_query.single();
