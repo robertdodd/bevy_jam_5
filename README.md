@@ -11,8 +11,8 @@ longer.
 
 ## Gameplay Controls
 
-- Mouse for cliking buttons
 - Arrow keys to move
+- Mouse for clicking buttons
 
 ## Issues with Firefox + AMD GPU:
 
