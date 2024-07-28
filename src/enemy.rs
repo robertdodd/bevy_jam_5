@@ -1,4 +1,4 @@
-use std::f32::consts::{FRAC_PI_4, FRAC_PI_8};
+use std::f32::consts::{FRAC_PI_8, TAU};
 
 use bevy::{color::palettes::css, prelude::*};
 
@@ -126,24 +126,35 @@ fn handle_spawn_events(
     let towards_camera = player_transform.translation.normalize();
 
     // define how far from the center the enemy should spawn
-    let enemy_up_pos = constants::PLANET_RADIUS + constants::ENEMY_SIZE / 2.;
+    let enemy_pos_radius = constants::PLANET_RADIUS + constants::ENEMY_SIZE / 2.;
 
     for _ in events.read() {
+        // Define the initial spawn transform. Rotate it for each mob to spawn.
         // Spawn players at fixed points along the circumference of the circle
-        let mut spawn_transform = Transform::from_translation(camera_up * enemy_up_pos);
-        for n in 0..8 {
+        let mut mob_transform = Transform::from_translation(camera_up * enemy_pos_radius);
+        let mob_angle = TAU / enemy_stats.mob_count as f32;
+        for n in 0..enemy_stats.mob_count {
             if n != 0 {
-                let rot = Quat::from_axis_angle(towards_camera, (n as f32 * FRAC_PI_4) + FRAC_PI_8);
-                spawn_transform.rotate_around(Vec3::ZERO, rot);
+                let rot = Quat::from_axis_angle(towards_camera, mob_angle + FRAC_PI_8);
+                mob_transform.rotate_around(Vec3::ZERO, rot);
             }
 
-            let pos = spawn_transform.translation;
-
-            commands.spawn(EnemyBundle::new(
-                pos,
-                enemy_stats.movement_speed,
-                enemy_stats.damage,
-            ));
+            // Spawn enemies in mob size
+            let mut enemy_transform = mob_transform;
+            for i in 0..enemy_stats.mob_size {
+                if i != 0 {
+                    let angle =
+                        get_angle_for_arc_length(constants::ENEMY_SIZE * 1.5, enemy_pos_radius);
+                    let rot = Quat::from_axis_angle(towards_camera, angle);
+                    enemy_transform.rotate_around(Vec3::ZERO, rot);
+                }
+                let pos = enemy_transform.translation;
+                commands.spawn(EnemyBundle::new(
+                    pos,
+                    enemy_stats.movement_speed,
+                    enemy_stats.damage,
+                ));
+            }
         }
     }
 }
