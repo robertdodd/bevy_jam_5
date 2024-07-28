@@ -17,7 +17,7 @@ impl Plugin for OrbPlugin {
                 setup_new_orbs,
                 handle_collision_events.run_if(on_event::<CollisionEvent>()),
                 (tick_orb_hits, update_orb_transform).run_if(not_paused),
-                spawn_new_orbs.run_if(resource_exists_and_changed::<PlayerStats>),
+                update_orbs_on_stats_change.run_if(resource_exists_and_changed::<PlayerStats>),
             )
                 .run_if(in_game),
         );
@@ -94,7 +94,7 @@ impl OrbResources {
         if let Some(ref mesh) = self.mesh {
             mesh.clone()
         } else {
-            let mesh = meshes.add(Sphere::new(constants::ORB_RADIUS));
+            let mesh = meshes.add(Sphere::new(1.));
             self.mesh = Some(mesh.clone());
             mesh
         }
@@ -171,6 +171,7 @@ fn tick_orb_hits(time: Res<Time>, mut query: Query<&mut Orb>) {
 /// System that rotates orbs around the player
 fn update_orb_transform(
     time: Res<Time>,
+    stats: Res<PlayerStats>,
     mut query: Query<(&mut Orb, &mut Transform)>,
     player_query: Query<(&Player, &GlobalTransform)>,
 ) {
@@ -189,33 +190,53 @@ fn update_orb_transform(
             player_transform.translation(),
             player.up.normalize(),
             orb.angle,
+            stats.get_attack_size(constants::ORB_RADIUS),
         );
     }
 }
 
-fn spawn_new_orbs(
+fn update_orbs_on_stats_change(
     mut commands: Commands,
     stats: Res<PlayerStats>,
-    orb_query: Query<(), With<Orb>>,
+    mut orb_query: Query<(&mut Collider, &mut Transform, &mut Orb)>,
     player_query: Query<(&Player, &GlobalTransform)>,
 ) {
-    if stats.orb_count > 0 {
-        let current_count = orb_query.iter().count();
-        if stats.orb_count as usize > current_count {
-            // get the players position and axis so we can position the orb appropriately
-            let (player, player_transform) = player_query.single();
-            let camera_up = player.up.normalize();
+    let mut orb_count = 0;
 
-            // spawn a new orb
-            commands.spawn(OrbBundle::new(
-                get_orb_transform(player_transform.translation(), camera_up, 0.),
-                stats.attack_damage,
-            ));
-        }
+    // update existing orbs and count them
+    for (mut collider, mut transform, mut orb) in orb_query.iter_mut() {
+        orb_count += 1;
+
+        // update the collider size
+        *collider = Collider::Sphere(stats.get_attack_size(constants::ORB_RADIUS));
+
+        // update the transform scale
+        transform.scale = Vec3::splat(stats.get_attack_size(constants::ORB_RADIUS));
+
+        // update the orb
+        orb.damage = stats.get_damage(constants::ORB_BASE_DAMAGE);
+    }
+
+    // spawn new orbs if required
+    if orb_count < stats.orb_count {
+        // get the players position and axis so we can position the orb appropriately
+        let (player, player_transform) = player_query.single();
+        let camera_up = player.up.normalize();
+
+        // spawn a new orb
+        commands.spawn(OrbBundle::new(
+            get_orb_transform(
+                player_transform.translation(),
+                camera_up,
+                0.,
+                stats.get_attack_size(constants::ORB_RADIUS),
+            ),
+            stats.get_damage(constants::ORB_BASE_DAMAGE),
+        ));
     }
 }
 
-fn get_orb_transform(player_pos: Vec3, camera_up: Vec3, angle: f32) -> Transform {
+fn get_orb_transform(player_pos: Vec3, camera_up: Vec3, angle: f32, radius: f32) -> Transform {
     // define the initial transform
     let mut new_transform =
         Transform::from_translation(player_pos + camera_up * constants::ORB_ORBIT_RADIUS);
@@ -227,6 +248,10 @@ fn get_orb_transform(player_pos: Vec3, camera_up: Vec3, angle: f32) -> Transform
 
     // normalize the position so its the correct distance from the center from the world
     new_transform.translation =
-        new_transform.translation.normalize() * (constants::PLANET_RADIUS + constants::ORB_RADIUS);
+        new_transform.translation.normalize() * (constants::PLANET_RADIUS + radius);
+
+    // set the scale
+    new_transform.scale = Vec3::splat(radius);
+
     new_transform
 }

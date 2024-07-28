@@ -202,8 +202,8 @@ fn handle_fire_events(
                 player_transform.translation(),
                 axis,
                 1.,
-                stats.attack_damage,
-                stats.attack_size_frac(),
+                stats.get_damage(constants::PLAYER_DEFAULT_DAMAGE),
+                stats.get_attack_size(constants::PROJECTILE_RADIUS),
                 stats.projectile_passthrough,
             ));
         }

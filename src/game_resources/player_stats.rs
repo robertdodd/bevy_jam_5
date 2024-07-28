@@ -14,8 +14,8 @@ pub struct PlayerStats {
 
     pub move_speed: f32,
 
-    pub attack_damage: f32,
-    pub attack_size: f32,
+    pub damage_percent: f32,
+    pub attack_size_percent: f32,
     pub attack_cooldown: f32,
     pub attack_amount: u32,
     pub projectile_passthrough: u32,
@@ -32,8 +32,8 @@ impl Default for PlayerStats {
             recovery: constants::PLAYER_DEFAULT_RECOVERY,
             armor: 10.,
             move_speed: constants::PLAYER_DEFAULT_SPEED,
-            attack_damage: constants::PLAYER_DEFAULT_DAMAGE,
-            attack_size: 100.,
+            damage_percent: 100.,
+            attack_size_percent: 100.,
             attack_cooldown: constants::PLAYER_DEFAULT_COOLDOWN,
             attack_amount: constants::PLAYER_DEFAULT_AMOUNT,
             pickup_radius: constants::PLAYER_DEFAULT_ATTRACTOR_RADIUS,
@@ -59,10 +59,10 @@ impl PlayerStats {
                 self.move_speed = power_up.value.add_f32(self.move_speed);
             }
             Stat::AttachDamage => {
-                self.attack_damage = power_up.value.add_f32(self.attack_damage);
+                self.damage_percent = power_up.value.add_f32(self.damage_percent);
             }
             Stat::AtackSize => {
-                self.attack_size = power_up.value.add_f32(self.attack_size);
+                self.attack_size_percent = power_up.value.add_f32(self.attack_size_percent);
             }
             Stat::AttackCooldown => {
                 self.attack_cooldown = power_up.value.add_f32(self.attack_cooldown);
@@ -82,8 +82,12 @@ impl PlayerStats {
         }
     }
 
-    pub fn attack_size_frac(&self) -> f32 {
-        self.attack_size / 100.
+    pub fn get_attack_size(&self, size: f32) -> f32 {
+        size * self.attack_size_percent / 100.
+    }
+
+    pub fn get_damage(&self, damage: f32) -> f32 {
+        damage * self.damage_percent / 100.
     }
 }
 

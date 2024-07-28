@@ -39,6 +39,8 @@ pub const ORB_COOLDOWN_SECS: f32 = 0.5;
 pub const ORB_MOVEMENT_SPEED: f32 = 40.;
 /// Orb cooldown before it can hit the same entity again
 pub const ORB_ORBIT_RADIUS: f32 = 5.;
+/// Orb base damage
+pub const ORB_BASE_DAMAGE: f32 = ENEMY_DEFAULT_HEALTH * 1.5;
 
 /// Radius of points
 pub const POINT_RADIUS: f32 = 0.25;
