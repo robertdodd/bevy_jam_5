@@ -24,6 +24,7 @@ pub struct Projectile {
     pub radius: f32,
     pub passthrough_count: u32,
     pub max_passthrough: u32,
+    pub hits: HashSet<Entity>,
 }
 
 impl Projectile {
@@ -35,6 +36,7 @@ impl Projectile {
             radius,
             max_passthrough,
             passthrough_count: 0,
+            hits: HashSet::<Entity>::new(),
         }
     }
 }
@@ -159,12 +161,17 @@ fn handle_collision_events(
                 health_query.get_mut(health_entity),
                 projectile_query.get_mut(projectile_entity),
             ) {
-                //ignore if marked to de-spawn
+                // ignore if marked to de-spawn
                 if to_despawn.contains(&projectile_entity) {
+                    continue;
+                }
+                // ignore if projectile has already hit this entity
+                if projectile.hits.contains(&health_entity) {
                     continue;
                 }
                 health.current -= projectile.damage;
                 projectile.passthrough_count += 1;
+                projectile.hits.insert(health_entity);
                 if projectile.passthrough_count >= projectile.max_passthrough {
                     to_despawn.insert(projectile_entity);
                 }
