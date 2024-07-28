@@ -98,7 +98,7 @@ fn stats_panel(parent: &mut ChildBuilder, stats: &PlayerStats) {
                 stats_table_row(p, "Damage", format!("{}%", stats.damage_percent));
                 stats_table_row(p, "Attack Size", format!("{}%", stats.attack_size_percent));
                 stats_table_row(p, "Cooldown", format!("{}", stats.attack_cooldown));
-                stats_table_row(p, "Weapon Amount", format!("{}", stats.attack_amount));
+                stats_table_row(p, "Weapon Amount", format!("{}", stats.attack_amount_extra));
                 stats_table_row(p, " ", " ");
                 // Pickup Radius
                 stats_table_row(p, "Pickup Radius", format!("{}", stats.pickup_radius));

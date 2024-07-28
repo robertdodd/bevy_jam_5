@@ -68,7 +68,7 @@ pub struct PlayerBundle {
     pub name: Name,
     pub player: Player,
     pub state_scoped: StateScoped<AppState>,
-    pub transform: Transform,
+    pub spatial: SpatialBundle,
     pub health: Health,
     pub collider: Collider,
     pub collision_groups: CollisionGroups,
@@ -82,11 +82,11 @@ impl PlayerBundle {
             name: Name::new("Player"),
             player: Player { up },
             state_scoped: StateScoped(AppState::Game),
-            transform: Transform::from_translation(Vec3::new(
+            spatial: SpatialBundle::from_transform(Transform::from_translation(Vec3::new(
                 0.,
                 0.,
                 constants::PLANET_RADIUS + constants::PLAYER_SIZE / 2.,
-            )),
+            ))),
             health: Health::default(),
             collider: Collider::Cuboid(Vec3::splat(constants::PLAYER_SIZE)),
             collision_groups: CollisionGroups::new(GROUP_PLAYER, GROUP_ENEMY | GROUP_POINT),

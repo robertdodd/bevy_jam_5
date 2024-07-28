@@ -17,8 +17,9 @@ pub struct PlayerStats {
     pub damage_percent: f32,
     pub attack_size_percent: f32,
     pub attack_cooldown: f32,
-    pub attack_amount: u32,
+    pub attack_amount_extra: u32,
     pub projectile_passthrough: u32,
+    pub projectile_speed: f32,
 
     pub orb_count: u32,
 
@@ -35,10 +36,11 @@ impl Default for PlayerStats {
             damage_percent: 100.,
             attack_size_percent: 100.,
             attack_cooldown: constants::PLAYER_DEFAULT_COOLDOWN,
-            attack_amount: constants::PLAYER_DEFAULT_AMOUNT,
+            attack_amount_extra: 0,
             pickup_radius: constants::PLAYER_DEFAULT_ATTRACTOR_RADIUS,
             projectile_passthrough: 1,
             orb_count: 0,
+            projectile_speed: 100.,
         }
     }
 }
@@ -68,7 +70,7 @@ impl PlayerStats {
                 self.attack_cooldown = power_up.value.add_f32(self.attack_cooldown);
             }
             Stat::AttackAmount => {
-                self.attack_amount = power_up.value.add_u32(self.attack_amount);
+                self.attack_amount_extra = power_up.value.add_u32(self.attack_amount_extra);
             }
             Stat::PickupRadius => {
                 self.pickup_radius = power_up.value.add_f32(self.pickup_radius);
@@ -79,6 +81,9 @@ impl PlayerStats {
             Stat::OrbCount => {
                 self.orb_count = power_up.value.add_u32(self.orb_count);
             }
+            Stat::ProjectileSpeed => {
+                self.projectile_speed = power_up.value.add_f32(self.projectile_speed);
+            }
         }
     }
 
@@ -88,6 +93,14 @@ impl PlayerStats {
 
     pub fn get_damage(&self, damage: f32) -> f32 {
         damage * self.damage_percent / 100.
+    }
+
+    pub fn get_amount(&self, amount: u32) -> u32 {
+        amount + self.attack_amount_extra
+    }
+
+    pub fn get_attack_speed(&self, speed: f32) -> f32 {
+        speed * self.projectile_speed / 100.
     }
 }
 
@@ -175,6 +188,7 @@ pub enum Stat {
     PickupRadius,
     ProjectilePassthrough,
     OrbCount,
+    ProjectileSpeed,
 }
 
 impl fmt::Display for Stat {
@@ -191,12 +205,13 @@ impl fmt::Display for Stat {
             Stat::PickupRadius => write!(f, "Pickup Radius"),
             Stat::ProjectilePassthrough => write!(f, "Projectile Passthrough"),
             Stat::OrbCount => write!(f, "Orb"),
+            Stat::ProjectileSpeed => write!(f, "Projectile Speed"),
         }
     }
 }
 
 impl Stat {
-    const ALL: [Self; 11] = [
+    const ALL: [Self; 12] = [
         Self::MaxHealth,
         Self::Recovery,
         Self::Armor,
@@ -208,6 +223,7 @@ impl Stat {
         Self::PickupRadius,
         Self::ProjectilePassthrough,
         Self::OrbCount,
+        Self::ProjectileSpeed,
     ];
 
     pub fn get_random_range(&self) -> Vec<PowerUpValue> {
@@ -264,9 +280,9 @@ impl Stat {
             }
             Stat::PickupRadius => {
                 vec![
-                    PowerUpValue::Percent(5),
                     PowerUpValue::Percent(10),
                     PowerUpValue::Percent(20),
+                    PowerUpValue::Percent(30),
                 ]
             }
             Stat::ProjectilePassthrough => {
@@ -274,6 +290,14 @@ impl Stat {
             }
             Stat::OrbCount => {
                 vec![PowerUpValue::Amount(1)]
+            }
+            Stat::ProjectileSpeed => {
+                vec![
+                    PowerUpValue::Percent(5),
+                    PowerUpValue::Percent(10),
+                    PowerUpValue::Percent(20),
+                    PowerUpValue::Percent(40),
+                ]
             }
         }
     }

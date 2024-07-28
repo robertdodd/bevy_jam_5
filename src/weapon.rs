@@ -153,13 +153,15 @@ fn fire_weapons(
     stats: Res<PlayerStats>,
 ) {
     for mut weapon in query.iter_mut() {
+        let attack_amount = stats.get_amount(constants::WEAPON_BASE_AMOUNT);
+
         match weapon.state {
             WeaponState::Attack => {
                 if weapon.fire_count == 0 || weapon.fire_timer.finished() {
                     weapon.fire_count += 1;
                     weapon.fire_timer.reset();
                     fire_writer.send(FireWeapon);
-                    if weapon.fire_count >= stats.attack_amount {
+                    if weapon.fire_count >= attack_amount {
                         weapon.state = WeaponState::Cooldown;
                         weapon.fire_timer.reset();
                         weapon.fire_count = 0;
@@ -201,7 +203,7 @@ fn handle_fire_events(
             commands.spawn(ProjectileBundle::new(
                 player_transform.translation(),
                 axis,
-                1.,
+                stats.get_attack_speed(constants::PROJECTILE_BASE_SPEED),
                 stats.get_damage(constants::PLAYER_DEFAULT_DAMAGE),
                 stats.get_attack_size(constants::PROJECTILE_RADIUS),
                 stats.projectile_passthrough,
