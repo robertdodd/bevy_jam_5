@@ -20,6 +20,7 @@ fn reset_game_resources(mut commands: Commands) {
     commands.insert_resource(EnemyStats::default());
     commands.insert_resource(PlayerScore::default());
     commands.insert_resource(GameTimer::default());
+    commands.insert_resource(EnemyStatsTimer::default());
 }
 
 fn tick_game_timer(time: Res<Time>, mut game_timer: ResMut<GameTimer>) {

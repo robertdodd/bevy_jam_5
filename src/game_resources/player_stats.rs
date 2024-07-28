@@ -32,7 +32,7 @@ impl Default for PlayerStats {
             attack_damage: constants::PLAYER_DEFAULT_DAMAGE,
             attack_size: 100.,
             attack_cooldown: constants::PLAYER_DEFAULT_COOLDOWN,
-            attack_amount: 1,
+            attack_amount: constants::PLAYER_DEFAULT_AMOUNT,
             pickup_radius: constants::PLAYER_DEFAULT_ATTRACTOR_RADIUS,
         }
     }
