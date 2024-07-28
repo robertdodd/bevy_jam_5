@@ -23,9 +23,7 @@ impl Default for PlayerScore {
     fn default() -> Self {
         Self {
             level: 1,
-            // TODO: RESTORE:
-            // next_level: 10,
-            next_level: 1,
+            next_level: 10,
             current_points: 0,
             total_points: 0,
             enemies_killed: 0,
