@@ -13,6 +13,7 @@ pub const PLAYER_DEFAULT_SPEED: f32 = 5.;
 pub const PLAYER_DEFAULT_ATTRACTOR_RADIUS: f32 = 5.;
 pub const PLAYER_DEFAULT_DAMAGE: f32 = 100.;
 pub const PLAYER_DEFAULT_COOLDOWN: f32 = 1.;
+pub const PLAYER_DEFAULT_RECOVERY: f32 = 1.;
 
 pub const FOILAGE_COUNT: u16 = 400;
 pub const FOILAGE_HEIGHT: f32 = 0.2;
