@@ -18,7 +18,14 @@ longer.
 
 If it freezes in Firefox after clicking "Play", you may need to use a Chromium browser, see: https://github.com/bevyengine/bevy/issues/14415
 
-## TODO
+## License
 
-- Show current cycle on screen
-- Special items
+Dual-licensed under either of
+
+- Apache License, Version 2.0,
+  ([LICENSE-APACHE](https://github.com/robertdodd/bevy_round_ui/blob/master/LICENSE-APACHE) or
+  https://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](https://github.com/robertdodd/bevy_round_ui/blob/master/LICENSE-MIT) or
+  https://opensource.org/licenses/MIT)
+
+at your option.
