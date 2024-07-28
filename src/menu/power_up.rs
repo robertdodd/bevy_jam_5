@@ -92,13 +92,24 @@ fn stats_panel(parent: &mut ChildBuilder, stats: &PlayerStats) {
                 stats_table_row(p, "Armor", format!("{}", stats.armor));
                 stats_table_row(p, " ", " ");
                 // Movement
-                stats_table_row(p, "Move Speed", format!("{}", stats.move_speed));
+                stats_table_row(p, "Move Speed", format!("{}%", stats.move_speed));
                 stats_table_row(p, " ", " ");
                 // Attack
                 stats_table_row(p, "Damage", format!("{}%", stats.damage_percent));
                 stats_table_row(p, "Attack Size", format!("{}%", stats.attack_size_percent));
                 stats_table_row(p, "Cooldown", format!("{}", stats.attack_cooldown));
                 stats_table_row(p, "Weapon Amount", format!("{}", stats.attack_amount_extra));
+                stats_table_row(
+                    p,
+                    "Projectile Speed",
+                    format!("{}%", stats.projectile_speed),
+                );
+                stats_table_row(
+                    p,
+                    "Projectile Passthrough",
+                    format!("{}", stats.projectile_passthrough),
+                );
+                stats_table_row(p, "Orbs", format!("{}", stats.orb_count));
                 stats_table_row(p, " ", " ");
                 // Pickup Radius
                 stats_table_row(p, "Pickup Radius", format!("{}", stats.pickup_radius));
