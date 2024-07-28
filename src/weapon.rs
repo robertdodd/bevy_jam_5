@@ -204,6 +204,7 @@ fn handle_fire_events(
                 1.,
                 stats.attack_damage,
                 stats.attack_size_frac(),
+                stats.projectile_passthrough,
             ));
         }
     }

@@ -18,6 +18,7 @@ pub struct PlayerStats {
     pub attack_size: f32,
     pub attack_cooldown: f32,
     pub attack_amount: u32,
+    pub projectile_passthrough: u32,
 
     pub pickup_radius: f32,
 }
@@ -34,6 +35,7 @@ impl Default for PlayerStats {
             attack_cooldown: constants::PLAYER_DEFAULT_COOLDOWN,
             attack_amount: constants::PLAYER_DEFAULT_AMOUNT,
             pickup_radius: constants::PLAYER_DEFAULT_ATTRACTOR_RADIUS,
+            projectile_passthrough: 1,
         }
     }
 }
@@ -67,6 +69,9 @@ impl PlayerStats {
             }
             Stat::PickupRadius => {
                 self.pickup_radius = power_up.value.add_f32(self.pickup_radius);
+            }
+            Stat::ProjectilePassthrough => {
+                self.projectile_passthrough = power_up.value.add_u32(self.projectile_passthrough);
             }
         }
     }
@@ -158,6 +163,7 @@ pub enum Stat {
     AttackCooldown,
     AttackAmount,
     PickupRadius,
+    ProjectilePassthrough,
 }
 
 impl fmt::Display for Stat {
@@ -172,6 +178,7 @@ impl fmt::Display for Stat {
             Stat::AttackCooldown => write!(f, "Weapon Cooldown"),
             Stat::AttackAmount => write!(f, "Attack Amount"),
             Stat::PickupRadius => write!(f, "Pickup Radius"),
+            Stat::ProjectilePassthrough => write!(f, "Projectile Passthrough"),
         }
     }
 }
@@ -247,6 +254,9 @@ impl Stat {
                     PowerUpValue::Percent(10),
                     PowerUpValue::Percent(20),
                 ]
+            }
+            Stat::ProjectilePassthrough => {
+                vec![PowerUpValue::Amount(1)]
             }
         }
     }
