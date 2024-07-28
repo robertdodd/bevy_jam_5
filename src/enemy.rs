@@ -1,4 +1,7 @@
-use std::f32::consts::{FRAC_PI_8, TAU};
+use std::{
+    f32::consts::{FRAC_PI_8, TAU},
+    time::Duration,
+};
 
 use bevy::{color::palettes::css, prelude::*};
 
@@ -11,13 +14,14 @@ pub struct EnemyPlugin;
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<EnemyResources>()
+            .init_resource::<EnemyStatsTimer>()
             .add_event::<SpawnEnemies>()
             .add_systems(
                 Update,
                 (
                     setup_new_enemies,
                     handle_spawn_events.run_if(on_event::<SpawnEnemies>()),
-                    (move_enemies, attack_players).run_if(not_paused),
+                    (move_enemies, attack_players, update_enemy_stats).run_if(not_paused),
                     handle_death_events.run_if(on_event::<DeathEvent>()),
                 )
                     .run_if(in_game),
@@ -132,8 +136,9 @@ fn handle_spawn_events(
         // Define the initial spawn transform. Rotate it for each mob to spawn.
         // Spawn players at fixed points along the circumference of the circle
         let mut mob_transform = Transform::from_translation(camera_up * enemy_pos_radius);
-        let mob_angle = TAU / enemy_stats.mob_count as f32;
-        for n in 0..enemy_stats.mob_count {
+        let mob_count = enemy_stats.mob_count.floor() as usize;
+        let mob_angle = TAU / mob_count as f32;
+        for n in 0..mob_count {
             if n != 0 {
                 let rot = Quat::from_axis_angle(towards_camera, mob_angle + FRAC_PI_8);
                 mob_transform.rotate_around(Vec3::ZERO, rot);
@@ -141,7 +146,7 @@ fn handle_spawn_events(
 
             // Spawn enemies in mob size
             let mut enemy_transform = mob_transform;
-            for i in 0..enemy_stats.mob_size {
+            for i in 0..(enemy_stats.mob_size.floor() as usize) {
                 if i != 0 {
                     let angle =
                         get_angle_for_arc_length(constants::ENEMY_SIZE * 1.5, enemy_pos_radius);
@@ -254,5 +259,23 @@ fn handle_death_events(
             // de-spawn the enemy
             commands.entity(event.0).despawn_recursive();
         }
+    }
+}
+
+fn update_enemy_stats(
+    time: Res<Time>,
+    mut timer: ResMut<EnemyStatsTimer>,
+    mut stats: ResMut<EnemyStats>,
+) {
+    timer.0.tick(time.delta());
+    if timer.0.finished() {
+        stats.upgrade();
+
+        // reset the timer to the next duration
+        let last_duration = timer.0.duration().as_secs_f32();
+        timer
+            .0
+            .set_duration(Duration::from_secs_f32(last_duration * 1.5));
+        timer.0.reset();
     }
 }
