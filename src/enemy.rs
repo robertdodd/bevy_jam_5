@@ -61,11 +61,12 @@ pub struct EnemyBundle {
 }
 
 impl EnemyBundle {
-    pub fn new(pos: Vec3, movement_speed: f32) -> Self {
+    pub fn new(pos: Vec3, movement_speed: f32, damage: f32) -> Self {
         Self {
             name: Name::new("Enemy"),
             enemy: Enemy {
                 speed: movement_speed,
+                damage,
                 ..default()
             },
             state_scoped: StateScoped(AppState::Game),
@@ -138,7 +139,11 @@ fn handle_spawn_events(
 
             let pos = spawn_transform.translation;
 
-            commands.spawn(EnemyBundle::new(pos, enemy_stats.get_movement_speed()));
+            commands.spawn(EnemyBundle::new(
+                pos,
+                enemy_stats.movement_speed,
+                enemy_stats.damage,
+            ));
         }
     }
 }
