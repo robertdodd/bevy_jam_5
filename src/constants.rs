@@ -31,6 +31,15 @@ pub const PROJECTILE_RADIUS: f32 = 0.2;
 /// Height above the ground
 pub const PROJECTILE_HEIGHT: f32 = 0.3;
 
+/// Radius of orbs
+pub const ORB_RADIUS: f32 = 0.75;
+/// Orb cooldown before it can hit the same entity again
+pub const ORB_COOLDOWN_SECS: f32 = 0.5;
+/// Orb cooldown before it can hit the same entity again
+pub const ORB_MOVEMENT_SPEED: f32 = 40.;
+/// Orb cooldown before it can hit the same entity again
+pub const ORB_ORBIT_RADIUS: f32 = 5.;
+
 /// Radius of points
 pub const POINT_RADIUS: f32 = 0.25;
 

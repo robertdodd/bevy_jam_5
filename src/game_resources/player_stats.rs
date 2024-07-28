@@ -20,6 +20,8 @@ pub struct PlayerStats {
     pub attack_amount: u32,
     pub projectile_passthrough: u32,
 
+    pub orb_count: u32,
+
     pub pickup_radius: f32,
 }
 
@@ -36,6 +38,7 @@ impl Default for PlayerStats {
             attack_amount: constants::PLAYER_DEFAULT_AMOUNT,
             pickup_radius: constants::PLAYER_DEFAULT_ATTRACTOR_RADIUS,
             projectile_passthrough: 1,
+            orb_count: 0,
         }
     }
 }
@@ -72,6 +75,9 @@ impl PlayerStats {
             }
             Stat::ProjectilePassthrough => {
                 self.projectile_passthrough = power_up.value.add_u32(self.projectile_passthrough);
+            }
+            Stat::OrbCount => {
+                self.orb_count = power_up.value.add_u32(self.orb_count);
             }
         }
     }
@@ -164,6 +170,7 @@ pub enum Stat {
     AttackAmount,
     PickupRadius,
     ProjectilePassthrough,
+    OrbCount,
 }
 
 impl fmt::Display for Stat {
@@ -179,12 +186,13 @@ impl fmt::Display for Stat {
             Stat::AttackAmount => write!(f, "Attack Amount"),
             Stat::PickupRadius => write!(f, "Pickup Radius"),
             Stat::ProjectilePassthrough => write!(f, "Projectile Passthrough"),
+            Stat::OrbCount => write!(f, "Orb"),
         }
     }
 }
 
 impl Stat {
-    const ALL: [Self; 9] = [
+    const ALL: [Self; 11] = [
         Self::MaxHealth,
         Self::Recovery,
         Self::Armor,
@@ -194,6 +202,8 @@ impl Stat {
         Self::AttackCooldown,
         Self::AttackAmount,
         Self::PickupRadius,
+        Self::ProjectilePassthrough,
+        Self::OrbCount,
     ];
 
     pub fn get_random_range(&self) -> Vec<PowerUpValue> {
@@ -256,6 +266,9 @@ impl Stat {
                 ]
             }
             Stat::ProjectilePassthrough => {
+                vec![PowerUpValue::Amount(1)]
+            }
+            Stat::OrbCount => {
                 vec![PowerUpValue::Amount(1)]
             }
         }
