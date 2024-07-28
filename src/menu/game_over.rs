@@ -22,7 +22,7 @@ fn setup_menu(mut commands: Commands, score: Res<PlayerScore>, timer: Res<GameTi
     .with_children(|p| {
         menu_title(p, "Game Over");
         stats_table(p, |p| {
-            stats_table_row(p, "Time Alive", timer.to_string(), css::YELLOW);
+            stats_table_row(p, "Time Alive", timer.to_time_string(), css::YELLOW);
             stats_table_row(p, "Points", format!("{}", score.total_points), css::BLUE);
             stats_table_row(
                 p,

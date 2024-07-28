@@ -22,11 +22,11 @@ pub struct Health {
     pub max_health: f32,
 }
 
-impl Health {
-    pub fn percent(&self) -> f32 {
-        self.current / self.max_health * 100.
-    }
-}
+// impl Health {
+//     pub fn percent(&self) -> f32 {
+//         self.current / self.max_health * 100.
+//     }
+// }
 
 impl Default for Health {
     fn default() -> Self {
