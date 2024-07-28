@@ -7,6 +7,8 @@ longer.
 
 ---
 
+![Screenshot](https://raw.githubusercontent.com/robertdodd/bevy_jam_5/master/images/screenshot.png)
+
 ## Gameplay Controls
 
 - Mouse for cliking buttons
